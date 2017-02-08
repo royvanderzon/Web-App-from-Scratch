@@ -24,12 +24,10 @@
 		toggle : function(route){
 			var sections = document.querySelectorAll('section');
 			sections.forEach(function(val, index, arr){
-				console.log(val.id)
-				console.log(route)
 				if('#'+val.id == route){
-					val.style.display = 'block';
+					val.classList.remove('hidden');
 				}else{
-					val.style.display = 'none';
+					val.classList.add('hidden');
 				}
 				console.log(val)
 			});

@@ -1,29 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Document</title>
-	<link rel="stylesheet" href="./assets/css/style.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Living Styleguide</title>
+
+    <link rel="stylesheet" href="./assets/css/style.css">
+
 </head>
 <body>
 
-<ul>
-	<li><a href="#screen_1">screen 1</a></li>
-	<li><a href="#screen_2">screen 2</a></li>
-	<li><a href="#screen_3">screen 3</a></li>
-</ul>
+<!-- NAVIGATION -->
 
-<section id="screen_1">
-	<h1>screen 1</h1>
-</section>
-<section id="screen_2">
-	<h1>screen 2</h1>
-</section>
-<section id="screen_3">
-	<h1>screen 3</h1>
-</section>
+<div class="nav_wrapper">
+	<label for="collapse_menu" id="collapse_btn">__</label>
+	<input id="collapse_menu" type="checkbox">
+	<nav>
+	    <h1>Main navigation</h1>
+	    <ul>
+	        <li><a href="#main-content" aria-label="Home, current page">Home</a></li>
+	        <li>
+	            <a href="/products">Artikelen</a>
+
+	            <ul>
+	                <li><a href="#artikel_1">Artikel 1</a></li>
+	                <li><a href="#artikel_2">Artikel 2</a></li>
+	                <li><a href="#artikel_3">Artikel 3</a></li>
+	            </ul>
+
+	        </li>
+	        <li><a href="/about">About</a></li>
+	        <li><a href="/contact">Contact</a></li>
+	    </ul>
+
+	</nav>
+</div>
+
+<header>
+	<h1>Living Styleguide</h1>
+</header>
+
+<main>
+
+	<div class="inner">
+
+		<section id="artikel_1">
+			<h2>Artikel_1</h2>		
+			<article>
+				<img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=469&h=279" alt="A colorful crayon drawing on the hood of a car." />
+				<div class="article_inner">
+					<h1><a href="/">HTML5 accessibility, are block links hurting accessibility?</a></h1>
+					<p>It is conforming in HTML5 for links to include block level elements such as headings and paragraphs, this was forbidden in previous versions of HTML. A recent article by @feather concludes that the inclusion of block level elements inside a link causes some Assistive Technology (AT) to misbehave.</p>
+				</div>
+			</article>
+		</section>
+
+		<section id="artikel_2" class="hidden">
+			<h2>Artikel_2</h2>		
+			<article>
+				<img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=469&h=279" alt="A colorful crayon drawing on the hood of a car." />
+				<div class="article_inner">
+					<h1><a href="/">HTML5 accessibility, are block links hurting accessibility?</a></h1>
+					<p>It is conforming in HTML5 for links to include block level elements such as headings and paragraphs, this was forbidden in previous versions of HTML. A recent article by @feather concludes that the inclusion of block level elements inside a link causes some Assistive Technology (AT) to misbehave.</p>
+				</div>
+			</article>
+		</section>
+
+		<section id="artikel_3" class="hidden">
+			<h2>Artikel_3</h2>		
+			<article>
+				<img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=469&h=279" alt="A colorful crayon drawing on the hood of a car." />
+				<div class="article_inner">
+					<h1><a href="/">HTML5 accessibility, are block links hurting accessibility?</a></h1>
+					<p>It is conforming in HTML5 for links to include block level elements such as headings and paragraphs, this was forbidden in previous versions of HTML. A recent article by @feather concludes that the inclusion of block level elements inside a link causes some Assistive Technology (AT) to misbehave.</p>
+				</div>
+			</article>
+		</section>
+		
+	</div>
+	
+</main>
 
 <script src="./assets/js/main.js"></script>
-	
+
+
+
+<!-- place components or patterns here -->
+
 </body>
 </html>

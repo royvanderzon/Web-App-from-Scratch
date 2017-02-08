@@ -1,7 +1,198 @@
-section {
-	display: none;
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+html {}
+
+*,
+body {
+    box-sizing: border-box;
 }
 
-#screen_1{
-	display: block;
+body {
+    font-size: 1em;
+    font-family: 'Roboto', sans-serif;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #ee6e73;
+}
+
+body > header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    background-color: #ee6e73;
+    height: 20vh;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+    position: fixed;
+    min-height: 200px;
+}
+
+body > header > h1 {
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    padding-bottom: 40px;
+    font-size: 48px;
+}
+
+body > main {
+    width: 80%;
+    width: 80vw;
+    display: block;
+    padding: 0;
+    float: right;
+    transition: 200ms all ease-in;
+}
+
+body > main > .inner {
+    width: 80%;
+    display: block;
+    position: relative;
+    padding: 2rem;
+    margin: 0 auto;
+    margin-top: -40px;
+    background-color: #fff;
+    max-width: 1000px;
+    margin-top: 160px;
+}
+
+body > .nav_wrapper > nav {
+    height: 100%;
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 300px;
+    max-width: 30vw;
+    background-color: #fff;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    transition: 200ms all ease-in;
+}
+
+body > .nav_wrapper > nav > h1 {
+    margin: 0;
+    padding: 25px 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+body > .nav_wrapper > nav > ul,
+body > .nav_wrapper > nav > ul ul {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+body > .nav_wrapper > nav > ul li a {
+    display: block;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #101010;
+    text-decoration: none;
+    background-color: rgba(0, 0, 0, 0);
+    transition: 100ms all ease-in;
+}
+
+body > .nav_wrapper > nav > ul ul a {
+    padding-left: 45px;
+    color: #666;
+}
+
+body > .nav_wrapper > nav > ul li a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+body > main article {
+    display: flex;
+    margin-bottom: 2rem;
+}
+
+body > main article > img {
+    width: 570px;
+    max-width: 100%;
+}
+
+body > main article > .article_inner {
+    padding: 1rem;
+}
+
+body > main article > .article_inner h1 a {
+    color: #ee6e73;
+    text-decoration: none;
+}
+
+body > .nav_wrapper > input,
+body > .nav_wrapper > label {
+    display: none;
+}
+
+@media screen and (max-width: 1350px) {
+    body > main article {
+        display: flex;
+        margin-bottom: 2rem;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 1350px) {
+    body > .nav_wrapper > nav {
+        /*left: -300px;*/
+        width: 100%;
+        max-width: 100%;
+        left: 100%;
+    }
+    body > main {
+        width: 100%;
+    }
+    body > .nav_wrapper > input:checked ~ nav {
+        left: 0%;
+    }
+    body > .nav_wrapper > label {
+        user-select: none;
+        cursor: pointer;
+        position: fixed;
+        top: -10px;
+        right: 25px;
+        z-index: 1000;
+        font-size: 40px;
+        display: block;
+        transform: scale(1);
+    }
+    body > .nav_wrapper > label::before {
+        content: '__';
+        position: absolute;
+        top: -10px;
+    }
+    body > .nav_wrapper > label::after {
+        content: '__';
+        position: absolute;
+        top: 10px;
+        left: 0;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    body > main > .inner {
+        padding: 1rem;
+    }
+}
+
+
+.hidden{
+	display: none;
 }
