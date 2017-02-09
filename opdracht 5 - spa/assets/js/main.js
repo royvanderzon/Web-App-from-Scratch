@@ -11,11 +11,10 @@
 
 	var routes = {
 		init : function(){
-
-			window.addEventListener("hashchange",function(event){
-				// sections.toggle((document.URL).split('#')[1]);
-				sections.toggle(window.location.hash);
-			});
+			
+			window.onhashchange = function() {
+		        sections.toggle(window.location.hash);
+		    };
 
 		}
 	};
