@@ -4,6 +4,4 @@ Minor project
 Project Web App From Scratch
 
 ##Wishlist
-* punt 1
-* punt 2
-* punt 3 
+* opdracht 5 http://www.widesi-webdesign.nl/minor/opdracht%205%20-%20spa/
