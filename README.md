@@ -6,7 +6,7 @@ Project Web App From Scratch
 ##Wishlist
 * opdracht 5 http://www.widesi-webdesign.nl/minor/opdracht%205%20-%20spa/
 
-(voordelen js framework)
+##frameworks (voordelen / nadelen)
 ####Voordelen
 -Snel coderen	
 -Ingewikkelde dingen makkelijker	
@@ -17,8 +17,7 @@ Project Web App From Scratch
 -Achterliggende system moeilijk te begrijpen
 -Extra page load
 
-##Opdarcht 3 
-(voordelen single page web app)
+##single page web app (voordelen / nadelen)
 ####Voordelen	
 -Gebruiker blijft op een pagina	
 -Data stromen blijven behouden	
