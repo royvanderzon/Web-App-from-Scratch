@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Slack Mailer</title>
+
+    <link rel="stylesheet" href="./css/styles.css">
+
+</head>
+<body>
+
+<!-- NAVIGATION -->
+
+<div class="nav_wrapper">
+    <label for="collapse_menu" id="collapse_btn">__</label>
+    <input id="collapse_menu" type="checkbox">
+    <nav>
+        <h1>Main navigation</h1>
+        <ul>
+            <li><a href="#" aria-label="Home, current page">Home</a></li>
+            <li><a href="#members">Members</a></li>
+            <!-- <li>
+                <a href="/products">Artikelen</a>
+
+                <ul>
+                    <li><a href="#artikel_1">Artikel 1</a></li>
+                    <li><a href="#artikel_2">Artikel 2</a></li>
+                    <li><a href="#artikel_3">Artikel 3</a></li>
+                </ul>
+
+            </li>
+            <li><a href="/contact">Contact</a></li> -->
+        </ul>
+
+    </nav>
+</div>
+
+<header>
+    <h1>Slack Mailer</h1>
+</header>
+
+<main>
+
+    <div class="inner">
+
+    <section id="main-content">
+        <div class="form-control">
+            <label for="liveSearch"></label>
+            <input type="text" class="liveSearch" name="liveSearch" id="liveSearch" placeholder="Search on anything..">
+            <button class="delSearch hidden">&times;</button>
+        </div>
+        <hr>
+        <div id="usersListContainer"></div>
+    </section>
+    <section id="members" class="hidden">
+        <a href="#main-content">Terug</a>
+    </section>
+
+    <script id="userListItem" type="text/html">
+    	<a href="" data-link>
+	        <h2 data-email></h2>
+	        <p data-name></p>
+	        <img data-avatar src="" alt="">
+    	</a>
+    </script>
+
+    <script id="singleUser" type="text/html">
+        <article>
+            <img data-avatar src="" alt="">
+            <div class="article_inner">
+                <h1 data-email></h1>
+                <p data-name></p>
+            </div>
+        </article>
+    </script>
+    <script src="./routie.js"></script>
+    <script src="./main.js"></script>
+
+</body>
+</html>
