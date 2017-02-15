@@ -17,6 +17,15 @@ body {
     overflow-y: scroll;
 }
 
+xmp {
+    background-color: #f7f7f7;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+    color: #333;
+}
+
 h1,
 h2,
 h3,
@@ -26,7 +35,7 @@ h6 {
     color: #ee6e73;
 }
 
-hr{
+hr {
     border: 1px solid #ccc;
     border-top-width: 0px;
 }
@@ -125,9 +134,16 @@ body > .nav_wrapper > nav > ul li a:hover {
 
 body > main article {
     display: flex;
+    flex-wrap: wrap;
     margin-bottom: 2rem;
     border-left: 1em solid #ddd;
     padding-left: 1em;
+}
+
+body > main article xmp{
+    flex-basis: 100%;
+    max-width: 100%;
+    
 }
 
 body > main article > img {
@@ -144,12 +160,50 @@ body > main article > .article_inner {
 }
 
 .signleUser {
+    background-color: rgba(255, 255, 255, 1);
     position: relative;
-    transition: 100ms all ease-in;
+    transition: 500ms all ease-in;
     transform: scale(1);
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
     padding-bottom: .5em;
+    /*transition: .4s background-color ease-in;*/
+    /*transition: .4s color ease-in;*/
 }
+
+.no-email{
+    background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Question_Mark.svg/2000px-Question_Mark.svg.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    opacity: 0.8;
+}
+.members-container article{
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
+}
+
+.hacked {
+    background-color: rgba(255, 0, 0, 0.5);
+    background-image: none;
+    color: #fff;
+    opacity: 1;
+}
+
+.hacked h1,.hacked h2,.hacked a{
+    color: #fff;
+}
+
+.save {
+    background-color: rgba(0, 255, 0, 0.5);
+    background-image: none;
+    color: #333;
+    opacity: 1;
+}
+
+.save h2,.save a{
+    color: #333;
+}
+
 
 .signleUser a::after {
     content: ' ';
@@ -216,28 +270,31 @@ button:hover {
 }
 
 textarea,
-input {
+input,
+select {
     border-radius: 2px;
     border: 1px solid #ddd;
+    margin-right: 10px;
 }
 
-input {
+input,
+select {
     transition: ease-in-out, all .35s ease-in-out;
     padding: 12px;
-}
-.liveSearch {
     font-size: 16px;
     padding-left: 12px;
     padding-right: 12px;
 }
 
-input:focus {
+input:focus,
+select:focus {
     /*background-color: #00838f;*/
     outline: -webkit-focus-ring-color auto 5px;
     outline-color: rgba(0, 131, 143, 0.5);
 }
 
-input:-webkit-autofill {
+input:-webkit-autofill,
+select:-webkit-autofill {
     /*background-color: #FAFFBD !important;*/
 }
 
@@ -263,6 +320,15 @@ body > main article > .article_inner h1 a {
 body > .nav_wrapper > input,
 body > .nav_wrapper > label {
     display: none;
+}
+
+.slackKey,
+.refresh,
+.checkSafe {
+    float: right;
+}
+.refresh{
+    margin-right: 10px;
 }
 
 @media screen and (max-width: 1350px) {

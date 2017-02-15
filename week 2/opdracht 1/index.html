@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
 
-    <title>Slack Mailer</title>
+    <title>Slack Safe</title>
 
     <link rel="stylesheet" href="./css/styles.css">
 
@@ -39,7 +39,7 @@
 </div>
 
 <header>
-    <h1>Slack Mailer</h1>
+    <h1>Slack Safe</h1>
 </header>
 
 <main>
@@ -51,12 +51,19 @@
             <label for="liveSearch"></label>
             <input type="text" class="liveSearch" name="liveSearch" id="liveSearch" placeholder="Search on anything..">
             <button class="delSearch hidden">&times;</button>
+            <button id="checkSafe" class="checkSafe">Are we safe?</button>
+            <button id="refresh" class="refresh">Refresh</button>
+            <select name="slackKey" id="slackKey" class="slackKey">
+                <option value="token=xoxp-138372543094-136986511584-138625989684-3293e890bb7274d53ff724a5901a8d02">Ocelot</option>
+                <option value="token=xoxp-13771535971-137383130642-142415615014-1363a63765ea49f9102fc7ea0911cdc1">Minor web</option>
+            </select>
         </div>
         <hr>
         <div id="usersListContainer"></div>
     </section>
-    <section id="members" class="hidden">
+    <section id="members" class="hidden members-container">
         <a href="#main-content">Terug</a>
+        <hr>
     </section>
 
     <script id="userListItem" type="text/html">
@@ -73,7 +80,9 @@
             <div class="article_inner">
                 <h1 data-email></h1>
                 <p data-name></p>
+                <a href="#" data-mailto target="_blank">Send Mail</a>
             </div>
+            <ul class="domains hidden"></ul>
         </article>
     </script>
     <script src="./routie.js"></script>
