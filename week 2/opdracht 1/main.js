@@ -24,7 +24,7 @@ var testAccount = {
         real_name: "John Doe",
         real_name_normalized: "John Doe",
         email: "berendpronk@quicknet.nl"
-        // email: "test@gmail.com"
+            // email: "test@gmail.com"
     },
     is_admin: false,
     is_owner: false,
@@ -36,6 +36,22 @@ var testAccount = {
 };
 
 (function() {
+
+    var config = {
+        slackKey: 'key',
+        el: {
+            newtoken: document.querySelectorAll('.newtoken')[0],
+            overlay: document.querySelectorAll('.overlay')[0],
+            modalContainer: document.querySelectorAll('.modal-container')[0],
+            message: document.querySelectorAll('.message')[0],
+            enterKey: document.querySelectorAll('.enterKey')[0],
+            disable: document.querySelectorAll('.disable')[0],
+            slackKeyInput: document.getElementById('slackKeyInput')
+        },
+        timeout : {
+            pownedDelay : 2500
+        }
+    }
 
     var dataSet = {
         request: function(requestObj) {
@@ -82,7 +98,8 @@ var testAccount = {
                 url: 'https://slack.com/api/users.list',
                 // queryString: 'token=xoxp-13771535971-137383130642-142415615014-1363a63765ea49f9102fc7ea0911cdc1', //minor web
                 // queryString: 'token=xoxp-138372543094-136986511584-138625989684-3293e890bb7274d53ff724a5901a8d02', //ocelot
-                queryString: document.getElementById('slackKey').value,
+                queryString: 'token=' + config.slackKey,
+                // queryString: document.getElementById('slackKey').value,
                 cb: cb
             });
         },
@@ -103,6 +120,7 @@ var testAccount = {
                             // url: 'https://haveibeenpwned.com/api/v2/breachedaccount/test@gmail.com', //request url
                             url: 'https://haveibeenpwned.com/api/v2/breachedaccount/' + email, //request url
                             cb: function(err, data) {
+                                scroll.to('#slack_' + id)
                                 if (err) {
                                     //this email is not hacked
                                     document.getElementById('slack_' + id).classList.add('save')
@@ -127,7 +145,7 @@ var testAccount = {
                         //request 
                     dataSet.request(requestObj)
 
-                }, 2000 * index)
+                }, (config.timeout.pownedDelay) * index)
 
 
             }()
@@ -144,6 +162,18 @@ var testAccount = {
         },
         set: function(name, data) {
             localStorage[name] = JSON.stringify(data)
+        }
+    }
+
+    var scroll = {
+        to: function(el) {
+            var anchor = document.querySelector(el);
+            var options = {
+                easing: "easeInOutCubic",
+                offset: 200,
+                speed: config.timeout.pownedDelay - 200,
+            }
+            smoothScroll.animateScroll(anchor, false, options);
         }
     }
 
@@ -200,23 +230,23 @@ var testAccount = {
             el.id = 'singleUserContainer'
             el.innerHTML = template
 
-            console.log(person)
+            // console.log(person)
 
             if (typeof person.hacked === 'object') {
                 if (person.hacked.hacked == true) {
                     el.classList.add('hacked')
-                    if (typeof person.profile.email === 'string') el.querySelectorAll("[data-mailto]")[0].href = 'mailto:' + person.profile.email + '?Subject=You%20are%20not%20save!&body=Check it out now, on localhost:3000! Here is your problem: '+JSON.stringify(person.hacked.data)
-                    if (person.hacked.data.length > 0){
+                    if (typeof person.profile.email === 'string') el.querySelectorAll("[data-mailto]")[0].href = 'mailto:' + person.profile.email + '?Subject=You%20are%20not%20save!&body=Check it out now, on localhost:3000! Here is your problem: ' + JSON.stringify(person.hacked.data)
+                    if (person.hacked.data.length > 0) {
                         el.querySelectorAll(".domains")[0].classList.remove('hidden')
-                        html = '';
-                        person.hacked.data.forEach(function(val){
-                            console.log(val)
+                        html = '<li><strong>Hacked databases</strong></li>';
+                        person.hacked.data.forEach(function(val) {
+                            // console.log(val)
                             html += '<li>'
-                            html += val.Name + ' - ' + val.Domain
+                            html += val.Name + ' - <a href="https://' + val.Domain + '" target=_black">' + val.Domain + '</a>'
                             html += '</li>'
                         })
                         el.querySelectorAll(".domains")[0].innerHTML = html
-                        // el.querySelectorAll("xmp")[0].innerHTML = JSON.stringify(person.hacked.data)
+                            // el.querySelectorAll("xmp")[0].innerHTML = JSON.stringify(person.hacked.data)
                     }
                 } else {
                     el.classList.add('save')
@@ -291,9 +321,6 @@ var testAccount = {
 
     var changeKey = {
         init: function() {
-            var el = document.getElementById('slackKey')
-            el.addEventListener("change", changeKey.changed)
-
             var el = document.getElementById('refresh')
             el.addEventListener("click", changeKey.changed, false)
         },
@@ -309,6 +336,9 @@ var testAccount = {
         },
         start: function() {
             app.mergePowned(storage.get('slackData').members)
+        },
+        disable: function(status) {
+            status == 'disable' ? config.el.disable.classList.remove('hidden') : config.el.disable.classList.add('hidden')
         }
     }
 
@@ -360,15 +390,53 @@ var testAccount = {
         }
     }
 
+    var token = {
+        init: function() {
+            config.el.newtoken.addEventListener("click", token.ask, false)
+            if (storage.defined('slackKey')) {
+                config.slackKey = storage.get('slackKey')
+            }
+        },
+        ask: function(message) {
+            typeof message === 'string' ? config.el.message.innerHTML = message : config.el.message.innerHTML = ''
+            config.el.enterKey.addEventListener("click", token.set, false)
+            config.el.overlay.addEventListener("click", token.hide, false)
+            config.el.modalContainer.classList.remove('hidden')
+        },
+        set: function() {
+            // config.slackKey = slackKeyInput.value
+            token.validate(slackKeyInput.value, function() {
+                config.el.modalContainer.classList.add('hidden')
+                config.slackKey = slackKeyInput.value
+                storage.set('slackKey', config.slackKey)
+                app.loadData()
+            })
+        },
+        validate: function(token, cb) {
+
+            if (typeof cb === 'function') {
+                cb()
+            }
+        },
+        hide: function() {
+            config.el.modalContainer.classList.add('hidden')
+        }
+    }
+
     var app = {
         init: function() {
-            //init search
+
+            //start smooth scroll
+            smoothScroll.init();
+
+            token.init()
             search.init()
             changeKey.init()
             areWeSave.init()
                 //check slack data is already present
             if (!storage.defined('slackData')) {
-                app.loadData()
+                //ask token
+                token.ask()
             } else {
                 //init (customized) routie
                 routes.start()
@@ -378,11 +446,18 @@ var testAccount = {
 
             var waitSlack = new Promise(function(resolve, reject) {
                 dataSet.getSlackData(function(err, data) {
+                    // console.log(data)
                     if (err) {
                         console.log(err)
                         reject('Failure!')
                     } else {
-                        data.members.push(testAccount)
+                        if (data.error) {
+                            console.log(data)
+                            console.log(config.slackKey)
+                            token.ask(data.error + ' please, re-issue your slack token!')
+                            return
+                        }
+                        // data.members.push(testAccount)
                         resolve(data)
                     }
                 })
@@ -402,6 +477,9 @@ var testAccount = {
 
         },
         mergePowned: function(data) {
+
+            // disable moving with mouse
+            areWeSave.disable('disable')
 
             var promises = [];
             data.filter(function(element) {
@@ -424,10 +502,24 @@ var testAccount = {
                 var usersData = storage.get('slackData')
 
                 usersData.members.map(function(user) {
-                    user.hacked = values.filter(function(value) {
-                        return user.id === value.id ? true : false
-                    })[0]
-                })
+                        user.hacked = values.filter(function(value) {
+                            return user.id === value.id ? true : false
+                        })[0]
+                        if (typeof user.hacked === 'object') {
+                            if (user.hacked.hacked) {
+                                user.hackString = 'hacked danger '
+                                user.hacked.data.forEach(function(val) {
+                                    user.hackString += val.Name + ' ' + val.Domain + ' ' + val.Title + 'IsActive:' + val.IsActive + ' IsRetired:' + val.IsRetired + ' IsSpamList:' + val.IsSpamList + ' IsVerified:' + val.IsVerified
+                                })
+                            } else {
+                                user.hackString = 'success safe'
+                            }
+                        } else {
+                            user.hackString = 'question noindex not found notfound'
+                        }
+                    })
+                    // enable moving with mouse
+                areWeSave.disable('enable')
                 storage.set('slackData', usersData)
 
             }, function(reason) {

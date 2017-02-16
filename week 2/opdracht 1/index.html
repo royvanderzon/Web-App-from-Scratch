@@ -18,9 +18,10 @@
     <label for="collapse_menu" id="collapse_btn">__</label>
     <input id="collapse_menu" type="checkbox">
     <nav>
-        <h1>Main navigation</h1>
+        <h1>Are we safe?</h1>
         <ul>
             <li><a href="#" aria-label="Home, current page">Home</a></li>
+            <li><a href="https://api.slack.com/docs/oauth-test-tokens" target="_blank" >Get your token</a></li>
             <li><a href="#members">Members</a></li>
             <!-- <li>
                 <a href="/products">Artikelen</a>
@@ -42,6 +43,8 @@
     <h1>Slack Safe</h1>
 </header>
 
+<div class="disable hidden"></div>
+
 <main>
 
     <div class="inner">
@@ -53,18 +56,30 @@
             <button class="delSearch hidden">&times;</button>
             <button id="checkSafe" class="checkSafe">Are we safe?</button>
             <button id="refresh" class="refresh">Refresh</button>
-            <select name="slackKey" id="slackKey" class="slackKey">
+            <button id="newtoken" class="newtoken">Change token</button>
+            <!-- <select name="slackKey" id="slackKey" class="slackKey">
                 <option value="token=xoxp-138372543094-136986511584-138625989684-3293e890bb7274d53ff724a5901a8d02">Ocelot</option>
                 <option value="token=xoxp-13771535971-137383130642-142415615014-1363a63765ea49f9102fc7ea0911cdc1">Minor web</option>
-            </select>
+            </select> -->
         </div>
         <hr>
         <div id="usersListContainer"></div>
     </section>
     <section id="members" class="hidden members-container">
-        <a href="#main-content">Terug</a>
+        <a href="#main-content">&#10094; Back</a>
         <hr>
     </section>
+
+    <div class="modal-container hidden">
+        <div class="overlay"></div>
+        <div class="modal">
+            <p>Please insert your slack token here. Don't have a token? Get it <a href="https://api.slack.com/docs/oauth-test-tokens" target="_blank"><strong>here</strong></a>.</p>
+            <label for="slackKeyInput" class="hidden">Slack token</label>
+            <input type="text" id="slackKeyInput" name="slackKeyInput" placeholder="xoxp-0000000-0000000">
+            <button class="enterKey">ENTER</button>
+            <p class="message"></p>
+        </div>
+    </div>
 
     <script id="userListItem" type="text/html">
     	<a href="" data-link>
@@ -85,6 +100,7 @@
             <ul class="domains hidden"></ul>
         </article>
     </script>
+    <script src="./smoothscroll.js"></script>
     <script src="./routie.js"></script>
     <script src="./main.js"></script>
 

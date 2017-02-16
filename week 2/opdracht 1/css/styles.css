@@ -140,10 +140,9 @@ body > main article {
     padding-left: 1em;
 }
 
-body > main article xmp{
+body > main article xmp {
     flex-basis: 100%;
     max-width: 100%;
-    
 }
 
 body > main article > img {
@@ -157,6 +156,148 @@ img[data-avatar] {
 
 body > main article > .article_inner {
     padding: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.message {
+    color: #ee6e73;
+    font-weight: bold;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+}
+
+.modal {
+    width: 40em;
+    max-width: 95%;
+    background-color: #fff;
+    padding: 2em;
+    z-index: 1002;
+}
+
+ul.domains {
+    list-style-type: none;
+    background-color: #9e9e9e;
+    margin: 0;
+    padding: 0;
+    padding: 1em;
+    float: right;
+    box-shadow: inset 0px 0px 4px 1px rgba(0, 0, 0, 0.15);
+    padding-left: 2em;
+    padding-right: 2em;
+    align-self: flex-start;
+}
+
+ul.domains li {
+    padding-bottom: 5px;
+    color: #f3f3f3;
+}
+
+ul.domains li:first-child {
+    font-size: 1.2em;
+    color: #fff;
+}
+
+ul.domains li:first-child::before {
+    display: none;
+}
+
+ul.domains li::before {
+    content: '\203A';
+    font-weight: bold;
+    margin-right: 12px;
+    transition: 100ms all ease-in;
+}
+
+ul.domains li:first-child::before {
+    content: '';
+}
+
+
+/*.showOverlay {
+    opacity: 1;
+    animation: showOverlay .4s forwards ease-in-out;
+    top: 0;
+}
+
+.hideOverlay {
+    animation: hideOverlay .4s forwards ease-in-out;
+}
+*/
+
+@keyframes showOverlay {
+    0% {
+        opacity: : 0;
+        top: -9999999px;
+        left: -9999999px;
+    }
+    2% {
+        opacity: 0;
+        top: 0px;
+        left: 0px;
+    }
+    50% {
+        opacity: 0;
+        top: 0px;
+        left: 0px;
+    }
+    100% {
+        top: 0px;
+        left: 0px;
+        opacity: 1;
+    }
+}
+
+@keyframes hideOverlay {
+    0% {
+        opacity: : 1;
+        top: 0px;
+        left: 0px;
+    }
+    50% {
+        opacity: 0;
+        top: 0px;
+        left: 0px;
+    }
+    98% {
+        top: 0px;
+        left: 0px;
+        opacity: 0;
+        display: block;
+    }
+    100% {
+        position: absolute;
+        top: -9999999px;
+        left: -9999999px;
+        margin-left: -100%;
+        margin-top: -100%;
+        opacity: 0;
+        display: none;
+        visibility: hidden;
+    }
 }
 
 .signleUser {
@@ -170,14 +311,16 @@ body > main article > .article_inner {
     /*transition: .4s color ease-in;*/
 }
 
-.no-email{
+.no-email {
     background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Question_Mark.svg/2000px-Question_Mark.svg.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: right;
     opacity: 0.8;
+    background-size: 30%;
 }
-.members-container article{
+
+.members-container article {
     padding-top: 1.5em;
     padding-bottom: 1.5em;
 }
@@ -189,7 +332,9 @@ body > main article > .article_inner {
     opacity: 1;
 }
 
-.hacked h1,.hacked h2,.hacked a{
+.hacked h1,
+.hacked h2,
+.hacked a {
     color: #fff;
 }
 
@@ -200,10 +345,23 @@ body > main article > .article_inner {
     opacity: 1;
 }
 
-.save h2,.save a{
+.save h2,
+.save a {
     color: #333;
 }
 
+.disable {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 2000;
+    display: block;
+    cursor: no-drop;
+}
 
 .signleUser a::after {
     content: ' ';
@@ -324,10 +482,13 @@ body > .nav_wrapper > label {
 
 .slackKey,
 .refresh,
-.checkSafe {
+.checkSafe,
+.newtoken {
     float: right;
 }
-.refresh{
+
+.refresh,
+.newtoken {
     margin-right: 10px;
 }
 
