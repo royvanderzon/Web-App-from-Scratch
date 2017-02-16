@@ -1,3 +1,4 @@
+//test account
 var testAccount = {
     id: "fsdue992fe",
     team_id: "T42AYFZ2S",
@@ -23,7 +24,7 @@ var testAccount = {
         image_original: "https://avatars.slack-edge.com/2017-02-06/138379227990_0d55c0413d69d3851f46_original.png",
         real_name: "John Doe",
         real_name_normalized: "John Doe",
-        email: "berendpronk@quicknet.nl"
+        email: "test@quicknet.nl"
             // email: "test@gmail.com"
     },
     is_admin: false,
@@ -40,16 +41,24 @@ var testAccount = {
     var config = {
         slackKey: 'key',
         el: {
-            newtoken: document.querySelectorAll('.newtoken')[0],
-            overlay: document.querySelectorAll('.overlay')[0],
-            modalContainer: document.querySelectorAll('.modal-container')[0],
-            message: document.querySelectorAll('.message')[0],
-            enterKey: document.querySelectorAll('.enterKey')[0],
-            disable: document.querySelectorAll('.disable')[0],
-            slackKeyInput: document.getElementById('slackKeyInput')
+            newtoken: document.querySelectorAll('.newtoken')[0], //submit request new token
+            overlay: document.querySelectorAll('.overlay')[0], //overlay in modal
+            modalContainer: document.querySelectorAll('.modal-container')[0], //modal container
+            message: document.querySelectorAll('.message')[0], //err message token modal
+            enterKey: document.querySelectorAll('.enterKey')[0], //submit token input
+            disable: document.querySelectorAll('.disable')[0], //disable overlay
+            autoplay: document.querySelectorAll('.autoplay')[0], //autoplay h4 element
+            auto_stop: document.querySelectorAll('.auto_stop')[0], //stop incidation
+            auto_play: document.querySelectorAll('.auto_play')[0], //start indication
+            slackKeyInput: document.getElementById('slackKeyInput') //token input
         },
-        timeout : {
-            pownedDelay : 2500
+        timeout: {
+            pownedDelay: 2500
+        },
+        scroll : {
+            lastId : '',
+            autoplay : true,
+            disableBtn : false
         }
     }
 
@@ -96,10 +105,7 @@ var testAccount = {
             dataSet.request({
                 requestType: 'POST',
                 url: 'https://slack.com/api/users.list',
-                // queryString: 'token=xoxp-13771535971-137383130642-142415615014-1363a63765ea49f9102fc7ea0911cdc1', //minor web
-                // queryString: 'token=xoxp-138372543094-136986511584-138625989684-3293e890bb7274d53ff724a5901a8d02', //ocelot
                 queryString: 'token=' + config.slackKey,
-                // queryString: document.getElementById('slackKey').value,
                 cb: cb
             });
         },
@@ -120,7 +126,9 @@ var testAccount = {
                             // url: 'https://haveibeenpwned.com/api/v2/breachedaccount/test@gmail.com', //request url
                             url: 'https://haveibeenpwned.com/api/v2/breachedaccount/' + email, //request url
                             cb: function(err, data) {
-                                scroll.to('#slack_' + id)
+
+                                scroll.loop(id)
+
                                 if (err) {
                                     //this email is not hacked
                                     document.getElementById('slack_' + id).classList.add('save')
@@ -166,6 +174,10 @@ var testAccount = {
     }
 
     var scroll = {
+        init : function(){
+            smoothScroll.init()
+            config.el.autoplay.addEventListener("click", scroll.toCurrent, false)
+        },
         to: function(el) {
             var anchor = document.querySelector(el);
             var options = {
@@ -174,6 +186,63 @@ var testAccount = {
                 speed: config.timeout.pownedDelay - 200,
             }
             smoothScroll.animateScroll(anchor, false, options);
+        },
+        loop : function(id){
+            //reset disableBtn after loop
+            config.scroll.disableBtn = false
+            config.el.autoplay.classList.remove('disableBtn')
+            //handle breakout
+            scroll.breakOut(id)
+        },
+        breakOut: function(id) {
+
+
+                var offsetTop = document.documentElement.scrollTop || document.body.scrollTop
+                var playPosition = templates.getOffset('#slack_' + id).top
+
+                if (offsetTop - 1000 < playPosition && offsetTop + 1000 > playPosition) {
+                    config.scroll.lastId = id
+                    if(config.scroll.autoplay){
+                        scroll.to('#slack_' + id)
+                        scroll.showStop()
+                    }else{
+                        scroll.showPlay()
+                    }
+                } else {
+                    config.scroll.autoplay = false
+                    scroll.showPlay()
+                }
+
+        },
+        indication: function(state) {
+            state == 'enable' ? config.el.autoplay.classList.remove('hidden') : config.el.autoplay.classList.add('hidden')
+        },
+        showPlay: function() {
+            config.el.auto_play.classList.remove('hidden')
+            if (!config.el.auto_stop.classList.contains('hidden')) {
+                config.el.auto_stop.classList.add('hidden')
+            }
+        },
+        showStop: function() {
+            config.el.auto_stop.classList.remove('hidden')
+            if (!config.el.auto_play.classList.contains('hidden')) {
+                config.el.auto_play.classList.add('hidden')
+            }
+        },
+        toCurrent : function(){
+            config.el.autoplay.classList.add('disableBtn')
+            if(!config.scroll.disableBtn){
+                config.scroll.disableBtn = true
+                if(config.scroll.autoplay){
+                    config.scroll.autoplay = false
+                }else{
+                    config.scroll.autoplay = true
+                    setTimeout(function(){
+                        config.scroll.autoplay = true
+                    },config.timeout.pownedDelay)
+                    scroll.to('#slack_' + config.scroll.lastId)
+                }
+            }
         }
     }
 
@@ -275,6 +344,13 @@ var testAccount = {
         checkAndRemove: function(id) {
             var el = document.getElementById(id)
             if (el !== null) el.parentNode.removeChild(el)
+        },
+        getOffset: function(el) {
+            el = document.querySelector(el).getBoundingClientRect()
+            return {
+                left: el.left + window.scrollX,
+                top: el.top + window.scrollY
+            }
         }
     }
 
@@ -427,7 +503,7 @@ var testAccount = {
         init: function() {
 
             //start smooth scroll
-            smoothScroll.init();
+            scroll.init()
 
             token.init()
             search.init()
@@ -457,7 +533,7 @@ var testAccount = {
                             token.ask(data.error + ' please, re-issue your slack token!')
                             return
                         }
-                        // data.members.push(testAccount)
+                        data.members.push(testAccount)
                         resolve(data)
                     }
                 })
@@ -480,6 +556,8 @@ var testAccount = {
 
             // disable moving with mouse
             areWeSave.disable('disable')
+            // enable autoplay indicaton
+            scroll.indication('enable')
 
             var promises = [];
             data.filter(function(element) {
@@ -520,6 +598,8 @@ var testAccount = {
                     })
                     // enable moving with mouse
                 areWeSave.disable('enable')
+                    // disable autoplay indicaton
+                scroll.indication('disable')
                 storage.set('slackData', usersData)
 
             }, function(reason) {

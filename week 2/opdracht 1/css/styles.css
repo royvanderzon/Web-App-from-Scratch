@@ -350,6 +350,20 @@ ul.domains li:first-child::before {
     color: #333;
 }
 
+.autoplay {
+    position: fixed;
+    right: 15px;
+    top: 15px;
+    color: #000;
+    z-index: 1;
+    font-size: 1.5em;
+    margin: 0;
+    z-index: 2001;
+}
+.disableBtn{
+    opacity: .5;
+}
+
 .disable {
     position: fixed;
     top: 0;
