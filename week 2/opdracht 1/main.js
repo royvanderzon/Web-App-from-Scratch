@@ -24,7 +24,7 @@ var testAccount = {
         image_original: "https://avatars.slack-edge.com/2017-02-06/138379227990_0d55c0413d69d3851f46_original.png",
         real_name: "John Doe",
         real_name_normalized: "John Doe",
-        email: "test@gmail.com"
+        email: "test@quicknet.nl"
             // email: "test@gmail.com"
     },
     is_admin: false,

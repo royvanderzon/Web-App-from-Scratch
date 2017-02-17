@@ -3,8 +3,9 @@ Minor project
 
 Project Web App From Scratch
 
-##Wishlist
-* opdracht 5 http://www.widesi-webdesign.nl/minor/opdracht%205%20-%20spa/
+##Links
+* Opdracht week 1 http://www.widesi-webdesign.nl/minor/opdracht%205%20-%20spa/
+* Opdracht week 2 http://widesi-webdesign.nl/minor/webappfromscratch/week-2/opdracht-1/
 
 ##frameworks (voordelen / nadelen)
 ####Voordelen
