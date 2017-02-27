@@ -24,8 +24,7 @@ var testAccount = {
         image_original: "https://avatars.slack-edge.com/2017-02-06/138379227990_0d55c0413d69d3851f46_original.png",
         real_name: "John Doe",
         real_name_normalized: "John Doe",
-        email: "test@quicknet.nl"
-            // email: "test@gmail.com"
+        email: "test@gmail.com"
     },
     is_admin: false,
     is_owner: false,
@@ -37,6 +36,8 @@ var testAccount = {
 };
 
 (function() {
+
+    "use strict";
 
     var config = {
         slackKey: 'key',
@@ -53,7 +54,8 @@ var testAccount = {
             slackKeyInput: document.getElementById('slackKeyInput') //token input
         },
         timeout: {
-            pownedDelay: 2500
+            pownedDelay: 1500
+            // pownedDelay: 2500
         },
         scroll : {
             lastId : '',
@@ -87,15 +89,23 @@ var testAccount = {
                 } else {
                     // We reached our target server, but it returned an error
                     if (typeof requestObj.cb === 'function') {
-                        requestObj.cb('error status: ' + request.status, data);
+                        console.log(request.status);
+                        if(request.status == 429){
+                            alert('problem')
+                        }
+                        // requestObj.cb('error status: ' + request.status, data);
+                        requestObj.cb(true, false);
                     }
                 }
             };
             request.onerror = function() {
                 // There was a connection error of some sort
                 if (typeof requestObj.cb === 'function') {
-                    console.log(request.status);
-                    requestObj.cb(true, false);
+                    // console.log('thisssss')
+                    // console.log(request)
+                    // console.log(request.status);
+
+                    // requestObj.cb(true, false);
                 }
             };
             request.send();
@@ -157,6 +167,62 @@ var testAccount = {
 
 
             }()
+        },
+        mergePowned: function(data) {
+
+            // disable moving with mouse
+            areWeSafe.disable('disable')
+            // enable autoplay indicaton
+            scroll.indication('enable')
+
+            var promises = [];
+            data.filter(function(element) {
+                return (typeof element.profile.email === 'string' ? true : false)
+            }).map(function(element, index) {
+
+                var _promise = new Promise(function(resolve, reject) {
+                    // setTimeout(resolve, 1000, element.profile.email)
+                    // dataSet.makePownedRequest(resolve, reject,index)
+                    dataSet.makePownedRequest(resolve, reject, element.profile.email, element.id, index)
+                })
+                promises.push(_promise);
+                // promises.push(dataSet.makePownedRequest(resolve, reject,element.profile.email))
+                return element
+            })
+
+            Promise.all(promises).then(function(values) {
+
+                //get data from localStorage
+                var usersData = storage.get('slackData')
+
+                usersData.members.map(function(user) {
+                        user.hacked = values.filter(function(value) {
+                            return user.id === value.id ? true : false
+                        })[0]
+                        if (typeof user.hacked === 'object') {
+                            if (user.hacked.hacked) {
+                                user.hackString = 'hacked danger '
+                                user.hacked.data.forEach(function(val) {
+                                    user.hackString += val.Name + ' ' + val.Domain + ' ' + val.Title + ' IsActive:' + val.IsActive + ' IsRetired:' + val.IsRetired + ' IsSpamList:' + val.IsSpamList + ' IsVerified:' + val.IsVerified
+                                })
+                            } else {
+                                user.hackString = 'success safe'
+                            }
+                        } else {
+                            user.hackString = 'question noindex not found notfound'
+                        }
+                    })
+                // enable moving with mouse
+                areWeSafe.disable('enable')
+                // disable autoplay indicaton
+                scroll.indication('disable')
+                storage.set('slackData', usersData)
+
+            }, function(reason) {
+                console.log(reason)
+            })
+
+            // routes.listen()
         }
 
     }
@@ -253,11 +319,11 @@ var testAccount = {
         renderTemplateUsersList: function(data) {
             //check if element exists, if true -> reset
             templates.checkAndRemove('usersList')
-                //create div and add classes
+            //create div and add classes
             var el = document.createElement('div')
             el.classList.add('usersList')
             el.id = 'usersList'
-                //append el
+            //append el
             document.getElementById("usersListContainer").appendChild(el)
 
             //add users from data
@@ -307,7 +373,7 @@ var testAccount = {
                     if (typeof person.profile.email === 'string') el.querySelectorAll("[data-mailto]")[0].href = 'mailto:' + person.profile.email + '?Subject=You%20are%20not%20save!&body=Check it out now, on localhost:3000! Here is your problem: ' + JSON.stringify(person.hacked.data)
                     if (person.hacked.data.length > 0) {
                         el.querySelectorAll(".domains")[0].classList.remove('hidden')
-                        html = '<li><strong>Hacked databases</strong></li>';
+                        var html = '<li><strong>Hacked databases</strong></li>';
                         person.hacked.data.forEach(function(val) {
                             // console.log(val)
                             html += '<li>'
@@ -368,7 +434,7 @@ var testAccount = {
     }
 
     var routes = {
-        start: function() {
+        listen: function() {
             routie({
                 '': function() {
                     search.clear()
@@ -386,32 +452,20 @@ var testAccount = {
                 'members/:id': function(id) {
 
                     sections.toggle('members')
-
-                    var members = storage.get('slackData').members
-                    templates.renderTemplateUserSingle(dataSet.findMemberById(members, id))
+                    templates.renderTemplateUserSingle(dataSet.findMemberById(storage.get('slackData').members, id))
 
                 }
             });
         }
     }
 
-    var changeKey = {
-        init: function() {
-            var el = document.getElementById('refresh')
-            el.addEventListener("click", changeKey.changed, false)
-        },
-        changed: function() {
-            app.loadData()
-        }
-    }
-
-    var areWeSave = {
+    var areWeSafe = {
         init: function() {
             var el = document.getElementById('checkSafe')
-            el.addEventListener("click", areWeSave.start, false)
+            el.addEventListener("click", areWeSafe.event, false)
         },
-        start: function() {
-            app.mergePowned(storage.get('slackData').members)
+        event: function() {
+            dataSet.mergePowned(storage.get('slackData').members)
         },
         disable: function(status) {
             status == 'disable' ? config.el.disable.classList.remove('hidden') : config.el.disable.classList.add('hidden')
@@ -448,12 +502,12 @@ var testAccount = {
                     //render template but filter on input first
                 templates.renderTemplateUsersList(storage.get('slackData').members.filter(function(value, index) {
                     //loop through properties in obj first
-                    for (var key in value) {
-                        if (value.hasOwnProperty(key)) {
+                    for (var thisKey in value) {
+                        if (value.hasOwnProperty(thisKey)) {
                             //if property is searchable
-                            if (typeof value[key] === 'string') {
+                            if (typeof value[thisKey] === 'string') {
                                 //if property matches return it
-                                if ((value[key]).toLowerCase().indexOf((input).toLowerCase()) > -1) {
+                                if ((value[thisKey]).toLowerCase().indexOf((input).toLowerCase()) > -1) {
                                     return true
                                 }
                             }
@@ -472,6 +526,7 @@ var testAccount = {
             if (storage.defined('slackKey')) {
                 config.slackKey = storage.get('slackKey')
             }
+            token.event()
         },
         ask: function(message) {
             typeof message === 'string' ? config.el.message.innerHTML = message : config.el.message.innerHTML = ''
@@ -496,26 +551,30 @@ var testAccount = {
         },
         hide: function() {
             config.el.modalContainer.classList.add('hidden')
+        },
+        event: function() {
+            var el = document.getElementById('refresh')
+            el.addEventListener("click", token.changed, false)
+        },
+        changed: function() {
+            app.loadData()
         }
     }
 
     var app = {
         init: function() {
-
             //start smooth scroll
             scroll.init()
-
             token.init()
             search.init()
-            changeKey.init()
-            areWeSave.init()
+            areWeSafe.init()
                 //check slack data is already present
             if (!storage.defined('slackData')) {
                 //ask token
                 token.ask()
             } else {
                 //init (customized) routie
-                routes.start()
+                routes.listen()
             }
         },
         loadData: function() {
@@ -542,71 +601,15 @@ var testAccount = {
             waitSlack.then(function(data) {
 
                 storage.set('slackData', data)
-                routes.start()
-
-                // app.mergePowned(data);
+                routes.listen()
 
             }).catch(function(err) {
                 console.log(err)
                 console.log('something went wrong..')
+                token.ask(err + ', please check your internet connection and re-type your Slack token!')
+                return
             })
 
-        },
-        mergePowned: function(data) {
-
-            // disable moving with mouse
-            areWeSave.disable('disable')
-            // enable autoplay indicaton
-            scroll.indication('enable')
-
-            var promises = [];
-            data.filter(function(element) {
-                return (typeof element.profile.email === 'string' ? true : false)
-            }).map(function(element, index) {
-
-                var _promise = new Promise(function(resolve, reject) {
-                    // setTimeout(resolve, 1000, element.profile.email)
-                    // dataSet.makePownedRequest(resolve, reject,index)
-                    dataSet.makePownedRequest(resolve, reject, element.profile.email, element.id, index)
-                })
-                promises.push(_promise);
-                // promises.push(dataSet.makePownedRequest(resolve, reject,element.profile.email))
-                return element
-            })
-
-            Promise.all(promises).then(function(values) {
-
-                //get data from localStorage
-                var usersData = storage.get('slackData')
-
-                usersData.members.map(function(user) {
-                        user.hacked = values.filter(function(value) {
-                            return user.id === value.id ? true : false
-                        })[0]
-                        if (typeof user.hacked === 'object') {
-                            if (user.hacked.hacked) {
-                                user.hackString = 'hacked danger '
-                                user.hacked.data.forEach(function(val) {
-                                    user.hackString += val.Name + ' ' + val.Domain + ' ' + val.Title + 'IsActive:' + val.IsActive + ' IsRetired:' + val.IsRetired + ' IsSpamList:' + val.IsSpamList + ' IsVerified:' + val.IsVerified
-                                })
-                            } else {
-                                user.hackString = 'success safe'
-                            }
-                        } else {
-                            user.hackString = 'question noindex not found notfound'
-                        }
-                    })
-                    // enable moving with mouse
-                areWeSave.disable('enable')
-                    // disable autoplay indicaton
-                scroll.indication('disable')
-                storage.set('slackData', usersData)
-
-            }, function(reason) {
-                console.log(reason)
-            })
-
-            routes.start()
         }
     }
 
