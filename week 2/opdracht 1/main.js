@@ -54,8 +54,7 @@ var testAccount = {
             slackKeyInput: document.getElementById('slackKeyInput') //token input
         },
         timeout: {
-            pownedDelay: 1500
-            // pownedDelay: 2500
+            pownedDelay: 2500
         },
         scroll : {
             lastId : '',
@@ -91,10 +90,11 @@ var testAccount = {
                     if (typeof requestObj.cb === 'function') {
                         console.log(request.status);
                         if(request.status == 429){
-                            alert('problem')
+                            requestObj.cb('request_denied', false);
+                        }else{
+                            requestObj.cb(true, false);
                         }
                         // requestObj.cb('error status: ' + request.status, data);
-                        requestObj.cb(true, false);
                     }
                 }
             };
@@ -137,16 +137,28 @@ var testAccount = {
                             url: 'https://haveibeenpwned.com/api/v2/breachedaccount/' + email, //request url
                             cb: function(err, data) {
 
+                                //clockfunction to keep track of the current position of the PownRequests
                                 scroll.loop(id)
 
-                                if (err) {
+                                if(err == 'request_denied'){
+                                    //this request was denied
+                                    document.getElementById('slack_' + id).classList.add('request_denied')
+                                    resolve({
+                                        hacked: false,
+                                        id: id,
+                                        email: email,
+                                        data: false,
+                                        response : 'request_denied'
+                                    })
+                                }else if (err) {
                                     //this email is not hacked
                                     document.getElementById('slack_' + id).classList.add('save')
                                     resolve({
                                         hacked: false,
                                         id: id,
                                         email: email,
-                                        data: false
+                                        data: false,
+                                        response : 'save'
                                     })
                                 } else {
                                     //this email is hacked
@@ -155,7 +167,8 @@ var testAccount = {
                                         hacked: true,
                                         id: id,
                                         email: email,
-                                        data: data
+                                        data: data,
+                                        response : 'hacked'
                                     })
                                 }
                             }
@@ -174,41 +187,58 @@ var testAccount = {
             areWeSafe.disable('disable')
             // enable autoplay indicaton
             scroll.indication('enable')
-
+            //array to store all promises filled with an ajax request (* timeout of index)
             var promises = [];
+
+
+            //only use the users with an email
             data.filter(function(element) {
                 return (typeof element.profile.email === 'string' ? true : false)
             }).map(function(element, index) {
-
+                //map through all users that have an email
+                //make a promise of every valid user
                 var _promise = new Promise(function(resolve, reject) {
-                    // setTimeout(resolve, 1000, element.profile.email)
-                    // dataSet.makePownedRequest(resolve, reject,index)
+                    //request function (Powned)
                     dataSet.makePownedRequest(resolve, reject, element.profile.email, element.id, index)
                 })
+                //push the promise to the array
                 promises.push(_promise);
-                // promises.push(dataSet.makePownedRequest(resolve, reject,element.profile.email))
                 return element
             })
 
+            //wait for all the promises to finish
             Promise.all(promises).then(function(values) {
 
                 //get data from localStorage
                 var usersData = storage.get('slackData')
 
+                //go trough every user from slack
                 usersData.members.map(function(user) {
+
+                        //set user.hacked with the data from the powned api
                         user.hacked = values.filter(function(value) {
+                            //return the matching user
                             return user.id === value.id ? true : false
                         })[0]
+
+                        //check if the user was hacked (if user.hacked === object)
                         if (typeof user.hacked === 'object') {
-                            if (user.hacked.hacked) {
+                            if (user.hacked.response == 'request_denied') {
+                                //setup hackstring for searching
+                                user.hackString = 'denied question'
+                            } else if (user.hacked.hacked) {
+                                //setup hackstring for searching
                                 user.hackString = 'hacked danger '
+                                //build very complete hackstring with loads of data and parameters
                                 user.hacked.data.forEach(function(val) {
                                     user.hackString += val.Name + ' ' + val.Domain + ' ' + val.Title + ' IsActive:' + val.IsActive + ' IsRetired:' + val.IsRetired + ' IsSpamList:' + val.IsSpamList + ' IsVerified:' + val.IsVerified
                                 })
                             } else {
+                                //setup hackstring for searching
                                 user.hackString = 'success safe'
                             }
                         } else {
+                            //setup hackstring for searching
                             user.hackString = 'question noindex not found notfound'
                         }
                     })
@@ -216,6 +246,7 @@ var testAccount = {
                 areWeSafe.disable('enable')
                 // disable autoplay indicaton
                 scroll.indication('disable')
+                // after all merging store the data for re-use
                 storage.set('slackData', usersData)
 
             }, function(reason) {
@@ -228,12 +259,15 @@ var testAccount = {
     }
 
     var storage = {
+        //check if there is already something stored
         defined: function(name) {
             return typeof localStorage[name] === 'undefined' ? false : true
         },
+        //get something from localStorage
         get: function(name) {
             return JSON.parse(localStorage[name])
         },
+        //set something in localStorage
         set: function(name, data) {
             localStorage[name] = JSON.stringify(data)
         }
@@ -241,18 +275,23 @@ var testAccount = {
 
     var scroll = {
         init : function(){
+            //start microlibrary
             smoothScroll.init()
+            //event on autoplaybutton
             config.el.autoplay.addEventListener("click", scroll.toCurrent, false)
         },
+        //scroll to element in DOM
         to: function(el) {
             var anchor = document.querySelector(el);
             var options = {
                 easing: "easeInOutCubic",
                 offset: 200,
+                //sync with the timeout of PownRequest Delay
                 speed: config.timeout.pownedDelay - 200,
             }
             smoothScroll.animateScroll(anchor, false, options);
         },
+        //fires every time when a PownRequest finishes
         loop : function(id){
             //reset disableBtn after loop
             config.scroll.disableBtn = false
@@ -336,7 +375,9 @@ var testAccount = {
                 el.innerHTML = template
 
                 if (typeof person.hacked === 'object') {
-                    if (person.hacked.hacked == true) {
+                    if (person.hacked.response == 'request_denied') {
+                        el.classList.add('request_denied')
+                    }else if (person.hacked.hacked == true) {
                         el.classList.add('hacked')
                     } else {
                         el.classList.add('save')
@@ -384,7 +425,11 @@ var testAccount = {
                             // el.querySelectorAll("xmp")[0].innerHTML = JSON.stringify(person.hacked.data)
                     }
                 } else {
-                    el.classList.add('save')
+                    if (person.hacked.response == 'request_denied') {
+                        el.classList.add('request_denied')
+                    }else {
+                        el.classList.add('save')
+                    }
                     if (typeof person.profile.email === 'string') el.querySelectorAll("[data-mailto]")[0].href = 'mailto:' + person.profile.email + '?Subject=You%20are%20safe!&body=Check it out now, on localhost:3000!'
                 }
             } else {
