@@ -1,3 +1,6 @@
+// KLEINE WIJZIGING
+
+
 //test account
 var testAccount = {
     id: "fsdue992fe",
