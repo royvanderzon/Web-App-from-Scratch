@@ -271,39 +271,42 @@ var testAccount = {
             Promise.all(promises).then(function(values) {
                 //get data from localStorage
                 var usersData = storage.get('slackData')
-                    //go trough every user from slack
+                //go trough every user from slack
                 usersData.members.map(function(user) {
                         //set user.hacked with the data from the powned api
-                        user.hacked = values.filter(function(value) {
-                                //return the matching user
-                                return user.id === value.id ? true : false
-                            })[0]
-                            //check if the user was hacked (if user.hacked === object)
-                        if (typeof user.hacked === 'object') {
-                            if (user.hacked.response == 'request_denied') {
-                                //setup hackstring for searching
-                                user.hackString = 'denied question'
-                            } else if (user.hacked.hacked) {
-                                //setup hackstring for searching
-                                user.hackString = 'hacked danger '
-                                    //build very complete hackstring with loads of data and parameters
-                                user.hacked.data.forEach(function(val) {
-                                    user.hackString += val.Name + ' ' + val.Domain + ' ' + val.Title + ' IsActive:' + val.IsActive + ' IsRetired:' + val.IsRetired + ' IsSpamList:' + val.IsSpamList + ' IsVerified:' + val.IsVerified
-                                })
+                        //check if api call is already made for this user
+                        if(typeof user.hacked === 'undefined'){
+                            user.hacked = values.filter(function(value) {
+                                    //return the matching user
+                                    return user.id === value.id ? true : false
+                                })[0]
+                                //check if the user was hacked (if user.hacked === object)
+                            if (typeof user.hacked === 'object') {
+                                if (user.hacked.response == 'request_denied') {
+                                    //setup hackstring for searching
+                                    user.hackString = 'denied question'
+                                } else if (user.hacked.hacked) {
+                                    //setup hackstring for searching
+                                    user.hackString = 'hacked danger '
+                                        //build very complete hackstring with loads of data and parameters
+                                    user.hacked.data.forEach(function(val) {
+                                        user.hackString += val.Name + ' ' + val.Domain + ' ' + val.Title + ' IsActive:' + val.IsActive + ' IsRetired:' + val.IsRetired + ' IsSpamList:' + val.IsSpamList + ' IsVerified:' + val.IsVerified
+                                    })
+                                } else {
+                                    //setup hackstring for searching
+                                    user.hackString = 'success safe'
+                                }
                             } else {
                                 //setup hackstring for searching
-                                user.hackString = 'success safe'
+                                user.hackString = 'question noindex not found notfound'
                             }
-                        } else {
-                            //setup hackstring for searching
-                            user.hackString = 'question noindex not found notfound'
                         }
                     })
                     // enable moving with mouse
                 areWeSafe.disable('enable')
-                    // disable autoplay indicaton
+                // disable autoplay indicaton
                 scroll.indication('disable')
-                    // after all merging store the data for re-use
+                // after all merging store the data for re-use
                 storage.set('slackData', usersData)
             }, function(reason) {
                 console.log(reason)
@@ -716,7 +719,6 @@ var testAccount = {
             var waitSlack = new Promise(function(resolve, reject) {
                 //get Slack user with token
                 dataSet.getSlackData(function(err, data) {
-                    // console.log(data)
                     if (err) {
                         console.log(err)
                         reject('Failure!')
