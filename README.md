@@ -11,11 +11,37 @@ We leven in een tijd waarin bedrijven gehacked worden en veiligheid voorop staat
 Slack Safe is een webapp waarin je kan zien of iedereen uit je Slack groep nog wel veilig is. Kopieer je token en start de app.
 Zoek filter en sorteer op onveiligheden!
 
+###Zoek parameters
 
 
-##Links
-* Opdracht week 1 http://www.widesi-webdesign.nl/minor/opdracht%205%20-%20spa/
+####Parameters
+email
+naam
+gehacked
+####Slugs
+denied
+question
+hacked
+danger
+IsActive
+IsRetired
+IsSpamList
+IsVerified
+success
+safe
+question
+noindex
+not
+found
+notfound
+
+##Opdracht
 * Opdracht week 2 http://widesi-webdesign.nl/minor/webappfromscratch/week-2/opdracht-1/
+
+##Wishlist
+-Tokens opslaan in localstorage
+-Serverside opslag
+-Mail functie via SMTP
 
 ##frameworks (voordelen / nadelen)
 ####Voordelen
