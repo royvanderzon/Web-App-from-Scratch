@@ -3,6 +3,16 @@ Minor project
 
 Project Web App From Scratch
 
+#Slack Safe
+##Beschrijving
+
+We leven in een tijd waarin bedrijven gehacked worden en veiligheid voorop staat. Waarom wachten en risico lopen?
+
+Slack Safe is een webapp waarin je kan zien of iedereen uit je Slack groep nog wel veilig is. Kopieer je token en start de app.
+Zoek filter en sorteer op onveiligheden!
+
+
+
 ##Links
 * Opdracht week 1 http://www.widesi-webdesign.nl/minor/opdracht%205%20-%20spa/
 * Opdracht week 2 http://widesi-webdesign.nl/minor/webappfromscratch/week-2/opdracht-1/
