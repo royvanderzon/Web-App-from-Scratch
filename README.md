@@ -37,6 +37,7 @@ notfound
 
 ##Opdracht
 * Opdracht week 2 http://widesi-webdesign.nl/minor/webappfromscratch/week-2/opdracht-1/
+* Flow http://widesi-webdesign.nl/minor/webappfromscratch/week-2/opdracht-1/flow.png
 
 ##Wishlist
 -Tokens opslaan in localstorage
